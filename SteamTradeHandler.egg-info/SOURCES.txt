@@ -1,0 +1,5 @@
+setup.py
+SteamTradeHandler.egg-info/PKG-INFO
+SteamTradeHandler.egg-info/SOURCES.txt
+SteamTradeHandler.egg-info/dependency_links.txt
+SteamTradeHandler.egg-info/top_level.txt
