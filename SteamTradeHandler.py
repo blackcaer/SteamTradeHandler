@@ -3,6 +3,7 @@ import json
 from fernet_wrapper import Wrapper as fernet_wrapper
 from steampy.client import SteamClient
 
+from steampy.models import TradeOfferState
 from TradeOffer import TradeOffer
 
 
@@ -114,10 +115,11 @@ class SteamTradeHandler:
 
     def accept_all_offers(self, gifts_only=False):
         trade_offers_received, trade_offers_sent = self.get_trade_offers()
+        responses = []
 
         if len(trade_offers_sent) != 0:
             print("==trade_offers_sent = ", trade_offers_sent)
-            input("==waiting for input")
+            raise NotImplementedError("Not implemented handlind accepting sent offers")
 
         if len(trade_offers_received) == 0:
             print("No trade offers recived\n")
@@ -125,13 +127,15 @@ class SteamTradeHandler:
 
         for offer in trade_offers_received:
             offer: TradeOffer
-
+            if offer.trade_state not in (TradeOfferState.Active,TradeOfferState.ConfirmationNeed):
+                print("Wrong state of offer: ",str(TradeOfferState(offer.trade_state)))
             if gifts_only and not offer.is_gift():
                 continue
             try:
-                offer.accept(verbose=True)
+                responses.append(offer.accept(verbose=True))
             except KeyError as e:
                 if e.args[0] == 'identity_secret':
                     print('You have to accept that offer via Steam Guard\n')
                 else:
                     raise e
+        return responses
